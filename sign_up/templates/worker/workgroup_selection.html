@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Workgroup Selection</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        select, button {
+            padding: 8px;
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Choose Your Workgroup</h1>
+    
+    {% if not can_select %}
+        <p>You have already chosen a workgroup and cannot change it at this stage.</p>
+        <p><strong>Current Workgroup:</strong> {{ sequence.workgroup.name }}</p>
+        <p><strong>Status:</strong> {{ sequence.status }}</p>
+    {% else %}
+        <form method="post" id="workgroupForm" onsubmit="return validateWorkgroupSelection()">
+            <label for="workgroup_id">Select Workgroup:</label>
+            <select name="workgroup_id" id="workgroup_id" required>
+                {% for workgroup in workgroups %}
+                    {% set counts = workgroup_counts[workgroup.id] %}
+                    <option value="{{ workgroup.id }}" 
+                            data-full="{{ 'true' if counts['full'] else 'false' }}"
+                            {% if counts['full'] %}disabled{% endif %}>
+                        {{ workgroup.name }} 
+                        ({{ counts['count'] }} / {{ counts['max'] }} {{ current_user.type }} workers)
+                    </option>
+                {% endfor %}
+            </select>
+            <button type="submit">Choose Workgroup</button>
+        </form>
+    {% endif %}
+    
+    {% if sequence and can_select %}
+        <h3>Current Selection</h3>
+        <p>Workgroup: {{ sequence.workgroup.name }}</p>
+        <p>Status: {{ sequence.status }}</p>
+    {% endif %}
+    
+    <a href="{{ url_for('main.worker_dashboard') }}">Back to Dashboard</a>
+
+    <script>
+        function validateWorkgroupSelection() {
+            const select = document.getElementById('workgroup_id');
+            const selectedOption = select.options[select.selectedIndex];
+            const isFull = selectedOption.getAttribute('data-full') === 'true';
+            
+            if (isFull) {
+                alert('This workgroup is already full for your type. Please choose another workgroup.');
+                return false;  // Prevent form submission
+            }
+            return true;  // Allow form submission
+        }
+    </script>
+</body>
+</html>

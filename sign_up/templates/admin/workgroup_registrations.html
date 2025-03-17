@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Workgroup Registrations</title>
+    <style>
+        table {
+            width: 80%;
+            border-collapse: collapse;
+            margin: 20px auto;
+        }
+        th, td {
+            padding: 10px;
+            border: 1px solid #ccc;
+            text-align: center;
+        }
+        th {
+            background-color: #f4f4f4;
+        }
+        .actions { display: flex; gap: 10px; }
+        a, button { padding: 5px 10px; background-color: #007bff; color: white; text-decoration: none; border: none; cursor: pointer; }
+        button:hover, a:hover { background-color: #0056b3; }
+        .worker-list {
+            margin: 20px auto;
+            width: 80%;
+        }
+        .worker-list ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        .worker-list li {
+            padding: 5px;
+            border-bottom: 1px solid #ccc;
+        }
+    </style>
+</head>
+<body>
+    <h1>Workgroup Registrations</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Workgroup</th>
+                <th>Senior Workers</th>
+                <th>Junior Workers</th>
+                <th>Max Senior</th>
+                <th>Max Junior</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for wg_id, data in registrations.items() %}
+            <tr>
+                <td>{{ data['name'] }}</td>
+                <td>{{ data['senior'] }}</td>
+                <td>{{ data['junior'] }}</td>
+                <td>{{ data['max_senior'] }}</td>
+                <td>{{ data['max_junior'] }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    
+    <div class="worker-list">
+        <h2>Workers Without a Workgroup</h2>
+        {% if workers_without_sequence %}
+        <ul>
+            {% for worker in workers_without_sequence %}
+            <li>{{ worker.name }} ({{ worker.type }})</li>
+            {% endfor %}
+        </ul>
+        <form method="post" action="{{ url_for('main.notify_unregistered_workers') }}">
+            <button type="submit">Notify All Unregistered Workers</button>
+        </form>
+        {% else %}
+        <p>All workers have registered for a workgroup.</p>
+        {% endif %}
+
+        <!-- Add this before the "Back to Admin Dashboard" link -->
+        <form method="post" action="{{ url_for('main.publish_in_group_initial_order') }}">
+            <button type="submit">Publish In-Group Initial Orders</button>
+        </form>
+    </div>
+    
+    <a href="{{ url_for('main.admin_dashboard') }}">Back to Admin Dashboard</a>
+</body>
+</html>

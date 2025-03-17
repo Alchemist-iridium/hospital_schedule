@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Preview Worker Import</title>
+    <style>
+        .container { width: 80%; margin: 20px auto; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 10px; text-align: left; border-bottom: 1px solid #ddd; }
+        th { background-color: #f4f4f4; }
+        button { padding: 10px; background-color: #007bff; color: white; border: none; cursor: pointer; }
+        button:hover { background-color: #0056b3; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Preview Worker Import</h1>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Type</th>
+                    <th>Initial Order</th>
+                    <th>Password</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in data %}
+                <tr>
+                    <td>{{ row.id }}</td>
+                    <td>{{ row.name }}</td>
+                    <td>{{ row.type }}</td>
+                    <td>{{ row.initial_order }}</td>
+                    <td>{{ row.password }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <form method="post" action="{{ url_for('main.confirm_import_workers') }}">
+            <button type="submit">Confirm Import</button>
+        </form>
+    </div>
+</body>
+</html>

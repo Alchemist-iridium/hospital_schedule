@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Schedule System</title>
+    <style>
+        .container { display: flex; }
+        .calendar { width: 70%; }
+        .shifts { width: 30%; margin-left: 20px; }
+        .calendar-table { width: 100%; border-collapse: collapse; }
+        .calendar-table th, .calendar-table td { border: 1px solid #ccc; padding: 5px; text-align: center; }
+        .unavailable { background-color: grey; color: white; }
+        .shift-group { margin-bottom: 20px; }
+        .selected-shift { background-color: lightblue; }
+        .overlap { background-color: pink; }
+        .submit-button { font-size: 1.5em; padding: 10px 20px; }
+        .day-header { cursor: pointer; }
+        .shift-list { display: none; }
+        .shift-list.visible { display: block; }
+        .midnight-marker { font-weight: bold; background-color: #f0f0f0; }
+    </style>
+</head>
+<body>
+    <h1>Choose Your Shifts</h1>
+    <a href="{{ url_for('main.worker_dashboard') }}">Back to Dashboard</a>
+
+    <div class="container">
+        <!-- Weekly Calendar Matrix -->
+        <div class="calendar">
+            <h2>Weekly Calendar</h2>
+            <table class="calendar-table">
+                <thead>
+                    <tr>
+                        <th>Time</th>
+                        <th>Mon</th>
+                        <th>Tue</th>
+                        <th>Wed</th>
+                        <th>Thu</th>
+                        <th>Fri</th>
+                        <th>Sat</th>
+                        <th>Sun</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Hours from 7:00 today to 6:00 tomorrow -->
+                    {% set hours = [7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 0, 1, 2, 3, 4, 5, 6] %}
+                    {% for hour in hours %}
+                        <tr>
+                            <td {% if hour == 0 %}class="midnight-marker"{% endif %}>
+                                {% if hour == 0 %}
+                                    00:00 THE EVE
+                                {% else %}
+                                    {{ '%02d:00' % hour }}
+                                {% endif %}
+                            </td>
+                            {% for day in range(1, 8) %}
+                                <td data-hour="{{ hour % 24 }}" data-day="{{ day }}"></td>
+                            {% endfor %}
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Available Shifts -->
+        <div class="shifts">
+            <h2>Available Shifts</h2>
+            <form method="post" id="shiftForm">
+                {% for day in range(1, 8) %}
+                    <div class="shift-group">
+                        <h3 class="day-header">{{ weekdays[day - 1] }}</h3>
+                        <div class="shift-list">
+                            {% for shift in shifts if shift.day == day %}
+                                <div class="shift">
+                                    <input type="checkbox" name="shifts" value="{{ shift.id }}"
+                                           data-day="{{ shift.day }}"
+                                           data-start="{{ shift.start_time.strftime('%H:%M') }}"
+                                           data-end="{{ shift.end_time.strftime('%H:%M') }}"
+                                           data-type="{{ shift.type }}">
+                                    {{ shift.type }}___{{ shift.start_time.strftime('%I:%M %p') }} - {{ shift.end_time.strftime('%I:%M %p') }} (Points: {{ shift.points }})
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endfor %}
+                <button type="submit" class="submit-button">Submit Schedules</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Foldable shift sections
+        document.querySelectorAll('.day-header').forEach(header => {
+            header.addEventListener('click', function() {
+                const shiftList = this.nextElementSibling;
+                shiftList.classList.toggle('visible');
+            });
+        });
+
+        // Shift selection logic
+        const shiftCheckboxes = document.querySelectorAll('input[name="shifts"]');
+        let selectedShifts = [];
+
+        function timeToMinutes(timeStr) {
+            const [hours, minutes] = timeStr.split(':').map(Number);
+            return hours * 60 + minutes;
+        }
+
+        shiftCheckboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                const shift = {
+                    id: this.value,
+                    day: parseInt(this.dataset.day),
+                    start: this.dataset.start,
+                    end: this.dataset.end,
+                    type: this.dataset.type
+                };
+                const startHour = parseInt(shift.start.split(':')[0]);
+                const endHour = parseInt(shift.end.split(':')[0]);
+                const startMinute = parseInt(shift.start.split(':')[1]);
+                const endMinute = parseInt(shift.end.split(':')[1]);
+
+                // Handle shifts spanning to next day
+                let days = [shift.day];
+                if (endHour < startHour || (endHour === startHour && endMinute <= startMinute)) {
+                    const nextDay = (shift.day % 7) + 1 === 8 ? 1 : (shift.day % 7) + 1;
+                    days.push(nextDay);
+                }
+
+                if (this.checked) {
+                    // Check for overlaps
+                    for (let existing of selectedShifts) {
+                        if (days.some(d => d === existing.day) &&
+                            shift.start < existing.end && shift.end > existing.start) {
+                            alert(`Shift ${shift.id} overlaps with another shift.`);
+                            this.checked = false;
+                            return;
+                        }
+                    }
+                    selectedShifts.push(shift);
+
+                    // Display shift on calendar
+                    for (let d of days) {
+                        let start = (d === shift.day) ? startHour : 0;
+                        let end = (d === shift.day && endHour >= startHour) ? endHour : (d !== shift.day ? endHour : 24);
+                        for (let hour = start; hour < end; hour++) {
+                            const cell = document.querySelector(`td[data-hour="${hour}"][data-day="${d}"]`);
+                            if (cell) {
+                                const shiftDiv = document.createElement('div');
+                                shiftDiv.className = 'selected-shift';
+                                shiftDiv.textContent = shift.type;
+                                shiftDiv.dataset.shiftId = shift.id;
+                                cell.appendChild(shiftDiv);
+                            }
+                        }
+                    }
+                } else {
+                    // Remove shift from calendar
+                    selectedShifts = selectedShifts.filter(s => s.id !== shift.id);
+                    for (let d of days) {
+                        let start = (d === shift.day) ? startHour : 0;
+                        let end = (d === shift.day && endHour >= startHour) ? endHour : (d !== shift.day ? endHour : 24);
+                        for (let hour = start; hour < end; hour++) {
+                            const cell = document.querySelector(`td[data-hour="${hour}"][data-day="${d}"]`);
+                            if (cell) {
+                                const shiftDiv = cell.querySelector(`.selected-shift[data-shift-id="${shift.id}"]`);
+                                if (shiftDiv) cell.removeChild(shiftDiv);
+                            }
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>

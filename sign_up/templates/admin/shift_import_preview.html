@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Preview Shift Import</title>
+    <style>
+        .container { width: 80%; margin: 20px auto; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 10px; border: 1px solid #ddd; }
+        th { background-color: #f4f4f4; }
+        button { padding: 10px; background-color: #007bff; color: white; border: none; cursor: pointer; margin-top: 20px; }
+        button:hover { background-color: #0056b3; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Preview Shift Import</h1>
+        <a href="{{ url_for('main.manage_shifts') }}">Back to Shift Management</a>
+        <table>
+            <tr>
+                <th>ID</th>
+                <th>Type</th>
+                <th>Day</th>
+                <th>Start Time</th>
+                <th>End Time</th>
+                <th>Points</th>
+            </tr>
+            {% for row in data %}
+            <tr>
+                <td>{{ row.id }}</td>
+                <td>{{ row.type }}</td>
+                <td>{{ row.day }}</td>
+                <td>{{ row.start_time }}</td>
+                <td>{{ row.end_time }}</td>
+                <td>{{ row.points }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+        <form method="post" action="{{ url_for('main.confirm_import_shifts') }}">
+            <button type="submit">Confirm Import</button>
+        </form>
+    </div>
+</body>
+</html>

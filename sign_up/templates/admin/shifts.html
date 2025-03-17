@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Manage Shifts</title>
+    <style>
+        .container { width: 80%; margin: 20px auto; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 10px; text-align: left; border-bottom: 1px solid #ddd; }
+        th { background-color: #f4f4f4; }
+        .actions { display: flex; gap: 10px; }
+        a, button { padding: 5px 10px; background-color: #007bff; color: white; text-decoration: none; border: none; cursor: pointer; }
+        button:hover, a:hover { background-color: #0056b3; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Manage Shifts</h1>
+        <a href="{{ url_for('main.admin_dashboard') }}">Back to Dashboard</a>
+        <a href="{{ url_for('main.add_shift') }}">Add Shift</a>
+        <a href="{{ url_for('main.import_shifts') }}">Import Shifts</a>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Type</th>
+                    <th>Day</th>
+                    <th>End Day</th>
+                    <th>Start Time</th>
+                    <th>End Time</th>
+                    <th>Points</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for shift in shifts %}
+                <tr>
+                    <td>{{ shift.id }}</td>
+                    <td>{{ shift.type }}</td>
+                    <td>{{ shift.day }}</td>
+                    <td>{{ shift.end_day }}</td>
+                    <td>{{ shift.start_time }}</td>
+                    <td>{{ shift.end_time }}</td>
+                    <td>{{ shift.points }}</td>
+                    <td class="actions">
+                        <a href="{{ url_for('main.edit_shift', id=shift.id) }}">Edit</a>
+                        <form action="{{ url_for('main.delete_shift', id=shift.id) }}" method="post">
+                            <button type="submit">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

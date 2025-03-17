@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Interval Import Result</title>
+    <style>
+        .container { width: 80%; margin: 20px auto; }
+        .success { color: green; }
+        .error { color: red; }
+        a { padding: 10px; background-color: #007bff; color: white; text-decoration: none; display: inline-block; margin-top: 20px; }
+        a:hover { background-color: #0056b3; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Interval Import Result</h1>
+        {% if success %}
+            <p class="success">All intervals imported successfully!</p>
+        {% elif errors %}
+            <p>Errors occurred during import:</p>
+            <ul>
+                {% for error in errors %}
+                <li class="error">{{ error }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+        <a href="{{ url_for('main.manage_intervals') }}">Back to Intervals</a>
+    </div>
+</body>
+</html>
