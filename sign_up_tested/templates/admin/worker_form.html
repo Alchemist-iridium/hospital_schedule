@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ action }} Worker</title>
+    <style>
+        .container { width: 50%; margin: 20px auto; }
+        form { display: flex; flex-direction: column; gap: 10px; }
+        label { font-weight: bold; }
+        input, select { padding: 8px; }
+        button { padding: 10px; background-color: #007bff; color: white; border: none; cursor: pointer; }
+        button:hover { background-color: #0056b3; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>{{ action }} Worker</h1>
+        <a href="{{ url_for('main.manage_workers') }}">Back to Worker Management</a>
+        <form method="post">
+            {% if action == 'Add' %}
+            <label for="id">ID:</label>
+            <input type="number" id="id" name="id" required>
+            {% else %}
+            <label>ID:</label>
+            <input type="text" value="{{ worker.id }}" disabled>
+            {% endif %}
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name" value="{{ worker.name if worker else '' }}" required>
+            
+            <label for="type">Type:</label>
+            <select id="type" name="type" required>
+                <option value="senior" {% if worker and worker.type == 'senior' %}selected{% endif %}>Senior</option>
+                <option value="junior" {% if worker and worker.type == 'junior' %}selected{% endif %}>Junior</option>
+            </select>
+
+            <label for="initial_order">Initial Order:</label>
+            <input type="number" id="initial_order" name="initial_order" value="{{ worker.initial_order if worker else '' }}" required>
+
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" {% if action == 'Add' %}required{% endif %}>
+
+            <button type="submit">{{ action }}</button>
+        </form>
+    </div>
+</body>
+</html>

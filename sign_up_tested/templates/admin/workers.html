@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Manage Workers</title>
+    <style>
+        .container { width: 80%; margin: 20px auto; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 10px; text-align: left; border-bottom: 1px solid #ddd; }
+        th { background-color: #f4f4f4; }
+        .actions { display: flex; gap: 10px; }
+        a, button { padding: 5px 10px; background-color: #007bff; color: white; text-decoration: none; border: none; cursor: pointer; }
+        button:hover, a:hover { background-color: #0056b3; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Manage Workers</h1>
+        <a href="{{ url_for('main.admin_dashboard') }}">Back to Dashboard</a>
+        <a href="{{ url_for('main.add_worker') }}">Add Worker</a>
+        <a href="{{ url_for('main.import_workers') }}">Import Workers</a>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Role</th>
+                    <th>Type</th>
+                    <th>Initial Order</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for worker in workers %}
+                <tr>
+                    <td>{{ worker.id }}</td>
+                    <td>{{ worker.name }}</td>
+                    <td>{{ worker.role }}</td>
+                    <td>{{ worker.type }}</td>
+                    <td>{{ worker.initial_order }}</td>
+                    <td class="actions">
+                        <a href="{{ url_for('main.edit_worker', id=worker.id) }}">Edit</a>
+                        <form action="{{ url_for('main.delete_worker', id=worker.id) }}" method="post">
+                            <button type="submit">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
