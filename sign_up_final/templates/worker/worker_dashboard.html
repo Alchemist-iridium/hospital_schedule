@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Worker Dashboard</title>
+    <style>
+        .grid-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr; /* Two equal columns */
+            gap: 20px;
+            margin: 20px;
+        }
+        .grid-item {
+            background-color: #f0f0f0;
+            padding: 30px;
+            text-align: center;
+            border: 1px solid #ccc;
+            text-decoration: none;
+            color: #333;
+            display: block;
+        }
+        .grid-item:hover {
+            background-color: #e0e0e0;
+        }
+        .disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+        .notification-indicator {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            background-color: red;
+            border-radius: 50%;  /* Makes it a circle */
+            margin-left: 5px;    /* Space between link text and dot */
+        }
+        .error-messages {
+            color: red;
+            list-style-type: none;
+            padding: 0;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <h1>Worker Dashboard - {{ current_user.name }}</h1>
+    
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <ul class="error-messages">
+                {% for message in messages %}
+                    <li>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
+
+    <a href="{{ url_for('main.notifications') }}">View Notifications
+        {% if unread_notifications > 0 %}
+            <span class="notification-indicator"></span>
+        {% endif %}
+    </a>
+    <div class="grid-container">
+        <a href="{{ url_for('main.workgroup_selection') }}" class="grid-item">Workgroup Selection</a>
+        {% if sequence_status == 'pending' %}
+            <a href="{{ url_for('main.priority_score_system') }}" class="grid-item">Priority Score System</a>
+        {% else %}
+            <div class="grid-item disabled">Priority Score System (Unavailable)</div>
+        {% endif %}
+        {% if can_choose_schedule %}
+            <a href="{{ url_for('main.schedule_system') }}" class="grid-item">Schedule System</a>
+        {% else %}
+            <div class="grid-item disabled">Schedule System (Unavailable)</div>
+        {% endif %}
+        <a href="{{ url_for('main.worker_schedule') }}" class="grid-item">Your Schedule</a>
+    </div>
+    <a href="{{ url_for('main.logout') }}">Logout</a>
+</body>
+</html>

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Import Workers</title>
+    <style>
+        .container { width: 50%; margin: 20px auto; }
+        form { display: flex; flex-direction: column; gap: 10px; }
+        label { font-weight: bold; }
+        input { padding: 8px; }
+        button { padding: 10px; background-color: #007bff; color: white; border: none; cursor: pointer; }
+        button:hover { background-color: #0056b3; }
+        .instructions { margin-top: 20px; padding: 10px; background-color: #f4f4f4; border-radius: 5px; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 8px; text-align: left; border-bottom: 1px solid #ddd; }
+        th { background-color: #e0e0e0; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Import Workers</h1>
+        <a href="{{ url_for('main.manage_workers') }}">Back to Worker Management</a>
+        <form method="post" enctype="multipart/form-data">
+            <label for="file">Upload CSV or XLSX File:</label>
+            <input type="file" id="file" name="file" accept=".csv, .xlsx" required>
+            <button type="submit">Upload and Preview</button>
+        </form>
+        <div class="instructions">
+            <h2>File Format Requirements</h2>
+            <p>The CSV or XLSX file must contain the following columns with the specified data types:</p>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Column Name</th>
+                        <th>Data Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>id</td>
+                        <td>Integer</td>
+                        <td>Unique identifier for the worker (e.g., 101, 102)</td>
+                    </tr>
+                    <tr>
+                        <td>name</td>
+                        <td>String</td>
+                        <td>Worker’s full name (e.g., "John Doe")</td>
+                    </tr>
+                    <tr>
+                        <td>type</td>
+                        <td>String</td>
+                        <td>Type of worker ("senior" or "junior")</td>
+                    </tr>
+                    <tr>
+                        <td>initial_order</td>
+                        <td>Integer</td>
+                        <td>Initial order for scheduling (e.g., 1, 2, 3)</td>
+                    </tr>
+                    <tr>
+                        <td>password</td>
+                        <td>String</td>
+                        <td>Worker’s initial password (e.g., "pass123")</td>
+                    </tr>
+                </tbody>
+            </table>
+            <p><strong>Note:</strong> Ensure all values are provided; missing or invalid data will result in errors during import.</p>
+        </div>
+    </div>
+</body>
+</html>

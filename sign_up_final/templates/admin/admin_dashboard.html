@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Dashboard</title>
+    <style>
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin: 20px;
+        }
+        .grid-item {
+            background-color: #f0f0f0;
+            padding: 20px;
+            text-align: center;
+            border: 1px solid #ccc;
+            text-decoration: none;
+            color: #333;
+            display: block;
+        }
+        .grid-item:hover {
+            background-color: #e0e0e0;
+        }
+        .reset-form {
+            margin: 20px;
+        }
+        button {
+            padding: 10px;
+            background-color: #dc3545; /* Red for reset */
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #c82333;
+        }
+        .notification-indicator {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            background-color: red;
+            border-radius: 50%;  /* Makes it a circle */
+            margin-left: 5px;    /* Space between link text and dot */
+        }
+    </style>
+</head>
+<body>
+    <h1>Admin Dashboard - {{current_user.name}}</h1>
+    <a href="{{ url_for('main.notifications') }}">View Notifications
+        {% if unread_notifications > 0 %}
+            <span class="notification-indicator"></span>
+        {% endif %}
+    </a>
+    <div class="grid-container">
+        <a href="{{ url_for('main.manage_workers') }}" class="grid-item">Manage Workers</a>
+        <a href="{{ url_for('main.manage_intervals') }}" class="grid-item">Manage Intervals</a>
+        <a href="{{ url_for('main.manage_shifts') }}" class="grid-item">Manage Shifts</a>
+        <a href="{{ url_for('main.manage_workgroups') }}" class="grid-item">Manage Workgroups</a>
+        <a href="{{ url_for('main.shift_interval_management') }}" class="grid-item" >Manage Shift-Interval Relationships</a>
+
+        <a href="{{ url_for('main.admin_operation_log') }}" class="grid-item">Operation Log</a>
+        <a href="{{ url_for('main.workgroup_registrations') }}"class="grid-item">View Workgroup Registrations</a>
+
+
+        <div class="reset-form">
+            <form method="post" action="{{ url_for('main.confirm_sequence') }}">
+                <button type="submit" onclick="return confirm('Are you sure you want to confirm the final sequence?');">Confirm Final Sequences</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="grid-container">
+        <a href="{{ url_for('main.export_schedule_by_worker') }}"class="grid-item">Export Schedule By Worker</a>
+        <a href="{{ url_for('main.export_schedule_by_shift') }}"class="grid-item">Export Schedule By Shift</a>
+    </div>
+
+    <div class="grid-container">
+        <a href="{{ url_for('main.update_worker_points') }}"class="grid-item">Manually Update Worker Points</a>
+    </div>
+
+    <div class="reset-form">
+        <form method="post" action="{{ url_for('main.reset_schedule') }}">
+            <button type="submit" onclick="return confirm('Are you sure you want to reset all schedule related data?');">Reset Schedule</button>
+        </form>
+    </div>
+    <a href="{{ url_for('main.logout') }}">Logout</a>
+</body>
+</html>

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Manage Workgroups</title>
+    <style>
+        .container { width: 80%; margin: 20px auto; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 10px; text-align: left; border-bottom: 1px solid #ddd; }
+        th { background-color: #f4f4f4; }
+        .actions { display: flex; gap: 10px; }
+        a, button { padding: 5px 10px; background-color: #007bff; color: white; text-decoration: none; border: none; cursor: pointer; }
+        button:hover, a:hover { background-color: #0056b3; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Manage Workgroups</h1>
+        <a href="{{ url_for('main.admin_dashboard') }}">Back to Dashboard</a>
+        <a href="{{ url_for('main.add_workgroup') }}">Add Workgroup</a>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Max Senior Workers</th>
+                    <th>Max Junior Workers</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for workgroup in workgroups %}
+                <tr>
+                    <td>{{ workgroup.id }}</td>
+                    <td>{{ workgroup.name }}</td>
+                    <td>{{ workgroup.max_senior_workers }}</td>
+                    <td>{{ workgroup.max_junior_workers }}</td>
+                    <td class="actions">
+                        <a href="{{ url_for('main.edit_workgroup', id=workgroup.id) }}">Edit</a>
+                        <form action="{{ url_for('main.delete_workgroup', id=workgroup.id) }}" method="post">
+                            <button type="submit">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
