@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Manage Intervals</title>
+    <style>
+        .container { width: 80%; margin: 20px auto; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 10px; text-align: left; border-bottom: 1px solid #ddd; }
+        th { background-color: #f4f4f4; }
+        .actions { display: flex; gap: 10px; }
+        a, button { padding: 5px 10px; background-color: #007bff; color: white; text-decoration: none; border: none; cursor: pointer; }
+        button:hover, a:hover { background-color: #0056b3; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Manage Intervals</h1>
+        <a href="{{ url_for('main.admin_dashboard') }}">Back to Dashboard</a>
+        <a href="{{ url_for('main.add_interval') }}">Add Interval</a>
+        <a href="{{ url_for('main.import_intervals') }}">Import Intervals</a>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Workgroup ID</th>
+                    <th>Day</th>
+                    <th>End Day</th>
+                    <th>Start Time</th>
+                    <th>End Time</th>
+                    <th>Max Senior Workers</th>
+                    <th>Max Junior Workers</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for interval in intervals %}
+                <tr>
+                    <td>{{ interval.id }}</td>
+                    <td>{{ interval.workgroup_id }}</td>
+                    <td>{{ interval.day }}</td>
+                    <td>{{ interval.end_day }}</td>
+                    <td>{{ interval.start_time }}</td>
+                    <td>{{ interval.end_time }}</td>
+                    <td>{{ interval.max_senior_workers }}</td>
+                    <td>{{ interval.max_junior_workers }}</td>
+                    <td class="actions">
+                        <a href="{{ url_for('main.edit_interval', id=interval.id) }}">Edit</a>
+                        <form action="{{ url_for('main.delete_interval', id=interval.id) }}" method="post">
+                            <button type="submit">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

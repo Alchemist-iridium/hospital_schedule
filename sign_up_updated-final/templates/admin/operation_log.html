@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Operation Log</title>
+    <style>
+        .container { width: 80%; margin: 20px auto; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 10px; text-align: left; border-bottom: 1px solid #ddd; }
+        th { background-color: #f4f4f4; }
+        a { padding: 10px; background-color: #007bff; color: white; text-decoration: none; display: inline-block; margin-top: 20px; }
+        a:hover { background-color: #0056b3; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="{{ url_for('main.admin_dashboard') }}">Back to Dashboard</a>
+        <h1>Your Operation Log</h1>
+        <table>
+            <thead>
+                <tr>
+                    <th>Timestamp</th>
+                    <th>Operation</th>
+                    <th>Entity Type</th>
+                    <th>Entity ID</th>
+                    <th>Details</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for operation in operations %}
+                <tr>
+                    <td>{{ operation.timestamp }}</td>
+                    <td>{{ operation.operation }}</td>
+                    <td>{{ operation.entity_type }}</td>
+                    <td>{{ operation.entity_id or 'N/A' }}</td>
+                    <td>{{ operation.details or 'No details' }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

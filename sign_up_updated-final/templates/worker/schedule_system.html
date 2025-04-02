@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Schedule System</title>
+    <style>
+        .container {
+            display: flex;
+            justify-content: space-between;
+        }
+        .day-section {
+            width: calc(100% / 7);
+            padding: 10px;
+            box-sizing: border-box;
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            margin: 5px;
+        }
+        .day-section h3 {
+            margin: 0;
+            padding: 5px;
+            background-color: #f0f0f0;
+            text-align: center;
+        }
+        .shift-list {
+            margin-top: 10px;
+        }
+        .shift {
+            margin-bottom: 5px;
+        }
+        .submit-button {
+            font-size: 1.5em;
+            padding: 10px 20px;
+            margin-top: 20px;
+            display: block;
+            width: 100%;
+        }
+        .conflict-notice {
+            color: red;
+            font-weight: bold;
+            display: none; /* Hidden by default */
+        }
+    </style>
+</head>
+<body>
+    <h1>Choose Your Shifts</h1>
+    <a href="{{ url_for('main.worker_dashboard') }}">Back to Dashboard</a>
+
+    <form method="post" id="shiftForm">
+        <div class="container">
+            {% for day in range(1, 8) %}
+                <div class="day-section">
+                    <h3>Day {{ day }}</h3>
+                    <div class="shift-list">
+                        {% for shift in shifts if shift.day == day %}
+                            <div class="shift">
+                                <input type="checkbox" name="shifts" value="{{ shift.id }}"
+                                       data-day="{{ shift.day }}"
+                                       data-start="{{ shift.start_time.strftime('%H:%M') }}"
+                                       data-end="{{ shift.end_time.strftime('%H:%M') }}">
+                                {{ shift.type }}: {{ shift.start_time.strftime('%H:%M') }} - {{ shift.end_time.strftime('%H:%M') }} (Points: {{ shift.points }})
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        <button type="submit" class="submit-button">Submit Schedules</button>
+    </form>
+
+
+    <!-- Modal for conflict notice -->
+    <div id="conflictModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); z-index: 1000;">
+        <div style="background: white; margin: 15% auto; padding: 20px; width: 300px; text-align: center; border-radius: 5px;">
+            <p>Selected shift overlaps with an existing shift on the same day.</p>
+            <button onclick="document.getElementById('conflictModal').style.display = 'none';">Close</button>
+        </div>
+    </div>
+
+    <script>
+        let selectedShifts = []; // Array to store selected shifts
+    
+        // Function to check if two shifts overlap
+        function isOverlapping(start1, end1, start2, end2) {
+            return start1 < end2 && start2 < end1;
+        }
+    
+        // Event listener for checkbox changes
+        document.querySelectorAll('input[type="checkbox"]').forEach(input => {
+            input.addEventListener('change', function() {
+                const shift = {
+                    id: this.value,
+                    day: this.dataset.day, // Assume data-day attribute holds the day
+                    startMinutes: parseInt(this.dataset.start), // Assume data-start holds start time in minutes
+                    endMinutes: parseInt(this.dataset.end) // Assume data-end holds end time in minutes
+                };
+    
+                if (this.checked) {
+                    // Check for overlaps
+                    for (let existing of selectedShifts) {
+                        if (shift.day === existing.day && 
+                            isOverlapping(shift.startMinutes, shift.endMinutes, existing.startMinutes, existing.endMinutes)) {
+                            // Show the modal and uncheck the box
+                            document.getElementById('conflictModal').style.display = 'block';
+                            this.checked = false;
+                            return;
+                        }
+                    }
+                    selectedShifts.push(shift);
+                } else {
+                    selectedShifts = selectedShifts.filter(s => s.id !== shift.id);
+                }
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Worker Import Result</title>
+    <style>
+        .container { width: 80%; margin: 20px auto; }
+        .success { color: green; font-weight: bold; }
+        .error { color: red; }
+        a { padding: 10px; background-color: #007bff; color: white; text-decoration: none; }
+        a:hover { background-color: #0056b3; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Worker Import Result</h1>
+        {% if success %}
+            <p class="success">All workers were imported successfully!</p>
+        {% elif errors %}
+            <p>The following errors occurred during import:</p>
+            <ul>
+                {% for error in errors %}
+                <li class="error">{{ error }}</li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No errors occurred, but no workers were added. Please check the import process.</p>
+        {% endif %}
+        <a href="{{ url_for('main.manage_workers') }}">Back to Workers</a>
+    </div>
+</body>
+</html>

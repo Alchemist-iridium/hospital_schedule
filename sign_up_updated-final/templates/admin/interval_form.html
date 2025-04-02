@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ action }} Interval</title>
+    <style>
+        .container { width: 50%; margin: 20px auto; }
+        form { display: flex; flex-direction: column; gap: 10px; }
+        label { font-weight: bold; }
+        input, select { padding: 8px; }
+        button { padding: 10px; background-color: #007bff; color: white; border: none; cursor: pointer; }
+        button:hover { background-color: #0056b3; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>{{ action }} Interval</h1>
+        <a href="{{ url_for('main.manage_intervals') }}">Back to Interval Management</a>
+        <form method="post">
+            {% if action == 'Add' %}
+            <label for="id">ID:</label>
+            <input type="number" id="id" name="id" required>
+            {% else %}
+            <label>ID:</label>
+            <input type="text" value="{{ interval.id }}" disabled>
+            {% endif %}
+            <label for="workgroup_id">Workgroup:</label>
+            <select id="workgroup_id" name="workgroup_id" required>
+                {% for workgroup in workgroups %}
+                <option value="{{ workgroup.id }}" {% if interval and interval.workgroup_id == workgroup.id %}selected{% endif %}>
+                    {{ workgroup.name }}
+                </option>
+                {% endfor %}
+            </select>
+            <label for="day">Day:</label>
+            <input type="number" id="day" name="day" value="{{ interval.day if interval else '' }}" required>
+            <label for="start_time">Start Time:</label>
+            <input type="time" id="start_time" name="start_time" value="{{ interval.start_time if interval else '' }}" required>
+            <label for="end_time">End Time:</label>
+            <input type="time" id="end_time" name="end_time" value="{{ interval.end_time if interval else '' }}" required>
+            <label for="max_senior_workers">Max Senior Workers:</label>
+            <input type="number" id="max_senior_workers" name="max_senior_workers" value="{{ interval.max_senior_workers if interval else '' }}" required>
+            <label for="max_junior_workers">Max Junior Workers:</label>
+            <input type="number" id="max_junior_workers" name="max_junior_workers" value="{{ interval.max_junior_workers if interval else '' }}" required>
+            <button type="submit">{{ action }}</button>
+        </form>
+    </div>
+</body>
+</html>

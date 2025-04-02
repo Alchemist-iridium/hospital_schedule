@@ -1,0 +1,106 @@
+<!-- templates/admin/update_worker_points.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Update Worker Points</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f4f4f4;
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        table {
+            width: 80%;
+            margin: 20px auto;
+            border-collapse: collapse;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        th, td {
+            padding: 12px;
+            border: 1px solid #ddd;
+            text-align: center;
+        }
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        .error {
+            color: red;
+            text-align: center;
+            margin: 10px 0;
+        }
+        .success {
+            color: green;
+            text-align: center;
+            margin: 10px 0;
+        }
+        form {
+            display: inline-block;
+        }
+        input[type="number"] {
+            width: 70px;
+            padding: 5px;
+            text-align: center;
+        }
+        input[type="submit"] {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            cursor: pointer;
+        }
+        input[type="submit"]:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <h1>Update Worker Points</h1>
+    
+    <!-- Display flash messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="{{ category }}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <a href="{{ url_for('main.admin_dashboard') }}">Back to Dashboard</a>
+    
+    <!-- Worker list table -->
+    <table>
+        <thead>
+            <tr>
+                <th>Worker Name</th>
+                <th>Current Points</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for worker in workers %}
+            <tr>
+                <td>{{ worker.name }}</td>
+                <td>{{ worker.points }}</td>
+                <td>
+                    <form method="POST" action="{{ url_for('main.update_worker_points') }}">
+                        <input type="hidden" name="worker_id" value="{{ worker.id }}">
+                        <input type="number" name="points" value="{{ worker.points }}" min="0">
+                        <input type="submit" value="Update">
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

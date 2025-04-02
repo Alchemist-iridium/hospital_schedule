@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Import Shifts</title>
+    <style>
+        .container { width: 50%; margin: 20px auto; }
+        form { display: flex; flex-direction: column; gap: 10px; }
+        label { font-weight: bold; }
+        input { padding: 8px; }
+        button { padding: 10px; background-color: #007bff; color: white; border: none; cursor: pointer; }
+        button:hover { background-color: #0056b3; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { padding: 8px; border: 1px solid #ddd; }
+        th { background-color: #f4f4f4; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Import Shifts</h1>
+        <a href="{{ url_for('main.manage_shifts') }}">Back to Shift Management</a>
+        <form method="post" enctype="multipart/form-data">
+            <label for="file">Upload CSV or XLSX File:</label>
+            <input type="file" id="file" name="file" accept=".csv, .xlsx" required>
+            <button type="submit">Upload and Preview</button>
+        </form>
+        <table>
+            <tr><th>Column</th><th>Type</th><th>Description</th></tr>
+            <tr>
+                <td>id</td>
+                <td>Integer</td>
+                <td>Unique identifier for the shift (e.g., 1, 2)</td>
+            </tr>
+            <tr><td>type</td><td>String</td><td>Shift type (e.g., "A")</td></tr>
+            <tr><td>day</td><td>Integer</td><td>Start day</td></tr>
+            <tr><td>start_time</td><td>String (HH:MM)</td><td>Start time (e.g., 07:00)</td></tr>
+            <tr><td>end_time</td><td>String (HH:MM)</td><td>End time (e.g., 11:00)</td></tr>
+            <tr><td>points</td><td>Integer</td><td>Points for the shift</td></tr>
+        </table>
+    </div>
+</body>
+</html>

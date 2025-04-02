@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Priority Score System</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .section {
+            margin-bottom: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .section h2 {
+            margin-top: 0;
+        }
+        .info {
+            font-weight: bold;
+        }
+        form {
+            margin-top: 10px;
+        }
+        input[type="number"] {
+            width: 100px;
+            padding: 5px;
+        }
+        button {
+            padding: 5px 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Priority Score System</h1>
+        
+        <!-- Workgroup Information -->
+        <div class="section">
+            <h2>Selected Workgroup</h2>
+            <p class="info">{{ sequence.workgroup.name }}</p>
+        </div>
+        
+        <!-- Points Management -->
+        <div class="section">
+            <h2>Points Management</h2>
+            <p>Available Points: <span class="info">{{ current_user.points }}</span></p>
+            <p>Traded Points: <span class="info">{{ current_user.traded_points }}</span></p>
+            
+            <!-- Trade Points Form -->
+            <form method="post">
+                <input type="hidden" name="trade_points" value="1">
+                <label for="points">Points to Trade:</label>
+                <input type="number" name="points" id="points" min="0" max="{{ current_user.points }}" required>
+                <button type="submit">Trade Points</button>
+            </form>
+            
+            <!-- Withdraw Points Form -->
+            <form method="post">
+                <label for="withdraw_points">Points to Withdraw:</label>
+                <input type="number" name="withdraw_points" id="withdraw_points" min="0" max="{{ current_user.traded_points }}" required>
+                <button type="submit">Withdraw Points</button>
+            </form>
+        </div>
+        
+        <!-- Sequence Information -->
+        <div class="section">
+            <h2>Sequence Information</h2>
+            {% if sequence.in_group_initial_order %}
+                <p>In Group Initial Order: 
+                    <span class="info">{{ sequence.in_group_initial_order }} / {{ total_workers_in_group }}</span>
+                    ({{ sequence.in_group_initial_order }} out of {{ total_workers_in_group }} {{ current_user.type }} workers)
+                </p>
+            {% else %}
+                <p>In Group Initial Order: Not calculated</p>
+            {% endif %}
+            <p>Sequence: 
+                {% if sequence.sequence %}
+                    <span class="info">{{ sequence.sequence }} / {{ total_workers_in_group }}</span>
+                {% else %}
+                    Not assigned
+                {% endif %}
+            </p>
+            <p>Status: <span class="info">{{ sequence.status }}</span></p>
+        </div>
+        
+        <a href="{{ url_for('main.worker_dashboard') }}">Back to Dashboard</a>
+    </div>
+</body>
+</html>
