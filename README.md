@@ -22,7 +22,7 @@ pip install flask flask-sqlalchemy werkzeug flask-login pandas openpyxl
   recommend using id:0000, as it is used in other route
 
 ## Grok conversation link (most recent one)
-[[https://grok.com/share/bGVnYWN5_a449f83f-eae7-421d-ac44-8f2d736aaa3b](https://x.com/i/grok/share/HfhKQvxncGRYwTj5aRM4YuVBr)](https://grok.com/share/bGVnYWN5_d380cf14-7ff4-4501-b6f6-2b30f3b77f18)
+[(https://grok.com/share/bGVnYWN5_d380cf14-7ff4-4501-b6f6-2b30f3b77f18)](https://grok.com/share/bGVnYWN5_d380cf14-7ff4-4501-b6f6-2b30f3b77f18)
 
 - testing files are for batch information
 
