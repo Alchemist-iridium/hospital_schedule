@@ -1562,8 +1562,9 @@ def update_sequence(workgroup_id, worker_type, w):
     # Recalculate current_score for each worker
     for seq in sequences:
         seq.calculate_priority(w)
-    # Sort by current_score (descending) and assign sequence numbers
-    sorted_sequences = sorted(sequences, key=lambda s: s.current_score, reverse=True)
+    # Sort by current_score (descending) first, then by existing sequence (ascending)
+    sorted_sequences = sorted(sequences, key=lambda s: (-s.current_score, s.sequence))
+    # Assign new sequence numbers based on sorted order
     for i, seq in enumerate(sorted_sequences, 1):
         seq.sequence = i
     db.session.commit()
