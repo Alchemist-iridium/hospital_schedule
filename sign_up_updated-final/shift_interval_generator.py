@@ -23,9 +23,9 @@ with open('ShiftInterval.csv', 'w', newline='') as csvfile:
     # Write the header
     writer.writerow(['shift_id', 'workgroup_id', 'interval_id'])
 
-    # Generate rows for all 70 shifts
-    for shift_id in range(1, 71):
-        # Calculate day (1 to 7)
+    # Generate rows for all 310 shifts
+    for shift_id in range(1, 311):  # 1 to 310 inclusive
+        # Calculate day (1 to 31)
         day = (shift_id - 1) // 10 + 1
         # Calculate type index (0 to 9)
         type_index = (shift_id - 1) % 10
@@ -34,11 +34,11 @@ with open('ShiftInterval.csv', 'w', newline='') as csvfile:
         interval_types = shift_type_to_interval_types[shift_type]
 
         # For each workgroup
-        for workgroup_id in range(1, 5):
+        for workgroup_id in range(1, 5):  # 1 to 4
             # For each interval type linked to the shift type
             for interval_type in interval_types:
                 # Calculate interval_id
-                interval_id = (workgroup_id - 1) * 35 + (day - 1) * 5 + interval_type
+                interval_id = (workgroup_id - 1) * 155 + (day - 1) * 5 + interval_type
                 # Write the row
                 writer.writerow([shift_id, workgroup_id, interval_id])
 
